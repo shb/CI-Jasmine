@@ -45,11 +45,11 @@ Roadmap
 Wrappers
 --------
 
-Making the library output function customizable one can write wrappers to
-seamlessly run PHPJasmine inside web application frameworks.
+Making the library ouput function customizable one can write wrappers to
+seamlessy run PHPJasmine fomr web application frameworks.
 
-Wrappers should be written for the most popular application 
+Wrapper should bew written for the most popular application 
 frameworks that only have basic testing support.
 
 The wrappers might adapt the API to resemble or match the test 
-functions already found inside the frameworks.
+function already found inside the frameworks.
