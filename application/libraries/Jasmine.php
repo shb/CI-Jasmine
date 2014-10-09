@@ -46,6 +46,11 @@ function describe ($topic, $specs)
 	$suite->run();
 }
 
+function beforeEach($func)
+{
+	\Jasmine::suite()->setup($func);
+}
+
 function it ($desc, $test)
 {
 	\Jasmine::suite()->spec($desc, $test);

@@ -5,8 +5,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Suite
 {
 	private $topic;
-	private $spec;
 	private $specs;
+	private $spec;
+	private $setup;
 
 	public function __construct($topic, $spec)
 	{
@@ -14,6 +15,11 @@ class Suite
 		$this->spec = $spec;
 		// Set the current suite instance
 		\Jasmine::suite($this);
+	}
+
+	public function setup($func)
+	{
+		$this->setup = $func;
 	}
 
 	public function spec ($desc, $test)
@@ -36,6 +42,11 @@ class Suite
 			// Set the current specification
 			$this->spec = $spec;
 			$ctx = new \stdClass;
+			// Possibly run setup handler
+			if (isset($this->setup)) {
+				$setup = $this->setup->bindTo($ctx);
+				$setup();
+			}
 			// Run the expectation test for the current specification
 			$boundTest = $test->bindTo($ctx);
 			$boundTest();
