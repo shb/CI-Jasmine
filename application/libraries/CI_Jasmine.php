@@ -84,5 +84,10 @@ class Expectation
 	{
 		echo $this->unit->run($this->actual === $expected, $this->positivity, $this->suite->topic());
 	}
+	
+	public function toBeUndefined()
+	{
+		echo $this->unit->run(!isset($this->actual), $this->positivity, $this->suite->topic());
+	}
 
 }
