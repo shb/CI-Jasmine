@@ -35,8 +35,10 @@ class Suite
 		{
 			// Set the current specification
 			$this->spec = $spec;
+			$ctx = new \stdClass;
 			// Run the expectation test for the current specification
-			$test();
+			$boundTest = $test->bindTo($ctx);
+			$boundTest();
 		}
 	}
 }
