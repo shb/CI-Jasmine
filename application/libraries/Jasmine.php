@@ -1,90 +1,57 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Jashmine
+class Jasmine
 {
-	public $topic;
-	private $spec;
-	private $specs;
-	
 	static private $instance;
 
-	public function __construct($topic=NULL, $spec=NULL)
+	/* Get or set curretn Jasmin Suite */
+	static public function suite($instance=NULL)
 	{
-		if (isset($topic))
-			$this->topic = $topic;
-		if (isset($spec))
-			$this->spec = $spec;
+		if (isset($instance)) {
+			\Jasmine::$instance = $instance;
+			if (isset($this))
+				return $this;
+		} else {
+			return \Jasmine::$instance;
+		}
+	}
 
-		Jasmine::$instance = $this;
-	}
-	
-	static public function instance()
-	{
-		return Jasmine::$instance;
-	}
+	/* Proxy current Jasmin Suite methods */
 
 	public function spec ($desc, $test)
 	{
-		$this->specs[$this->topic.' '.$desc] = $test;
+		$this->instance->spec($desc, $test);
 	}
-	
+
 	public function topic ()
 	{
-		return empty($this->spec)? $this->topic : $this->spec;
+		return $this->instance->topic();
 	}
 
 	public function run()
 	{
-		Jasmine::$instance = $this;
-		foreach ($this->specs as $spec => $test)
-		{
-			$this->spec = $spec;
-			$test();
-		}
+		$this->instance->run();
 	}
 }
 
+require_once (dirname(__FILE__).DIRECTORY_SEPARATOR.'CI_Jasmine.php');
+
 function describe ($topic, $specs)
 {
-	$test = new Jasmine($topic, $specs);
+	// Create a new suite
+	$suite = new \CI_Jasmine\Suite($topic, $specs);
+	// Run the user defined suite specification
 	$specs();
-	$test->run();
+	// Evaluate the test suite
+	$suite->run();
 }
 
 function it ($desc, $test)
 {
-	Jasmine::instance()->spec($desc, $test);
+	\Jasmine::suite()->spec($desc, $test);
 }
 
 function expect ($actual)
 {
-	return new Expectation ($actual, Jasmine::instance());
-}
-
-class Expectation
-{
-	private $batch;
-	private $actual;
-	private $unit;
-
-	public function __construct ($actual, $batch=NULL)
-	{
-		$this->batch = isset($batch)? $batch : Jasmine::instance();
-		$this->actual = $actual;
-		$CI = get_instance();
-		$CI->load->library('unit_test');
-		$this->unit = $CI->unit;
-	}
-
-	public function toEqual ($expected)
-	{
-		echo $this->unit->run($this->actual, $expected, $this->batch->topic());
-	}
-
-	public function toBe($archetype)
-	{
-		//$this->expected = $name;
-		echo $this->unit->run($this->actual, "is_{$archetype}", $this->batch->topic());
-	}
-
+	return new \CI_Jasmine\Expectation ($actual, \Jasmine::suite());
 }

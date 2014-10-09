@@ -23,20 +23,20 @@ After doing this you can run test like this:
     {
 
       it("can test against literal values", function () {
-        $value = 'right';
-		  expect($value)->toEqual('right');
+        $left = 'right';
+        expect($left)->toBe('right');
       });
-      
-      it("can test by type", function () {
-        $string = 'imastring';
-        expect($string)->toBe('string');
-      });
-      
+
       // And so on...
 
     });
 
 
-`epect($actual)->toEqual($value)` tests the _actual_ against an immediate _value_.
+Roadmap
+-------
 
-When using `expect($actual)->toBe($type)`, _$type_ can refer to any of the CodeIgniter standard `is_*` tests.
+### v 1.0.0
+
+- Make PHP-Jasmine framework independent
+- Include framework wrappers as library addons in a single repository or
+- Make different repositories with wrappers for different frameworks?
