@@ -1,27 +1,28 @@
 CodeIgniter Jasmine
 ===================
 
-**Simple Jasmine-like CodeIgniter unit test wrapper library*
+**Simple Jasmine-like CodeIgniter unit testing wrapper library**
 
 
 Installation
 ------------
 
-Copy the `application/libraries/Jasmine.php` inside your 
-CodeIgn
-iter application's libraries directory.
+Copy the `application/libraries/Jasmine.php` file inside your CodeIgniter
+application's libraries directory.
 
-Description
------------
+Usage
+-----
 
-This library wraps the simple CodeIgnter unit testing library in a 
-Jasmine-like interface. With this you can write tests like:
+Load the library with (usually you'll want to do this inside a controller):
 
-    $this->load->library('jasmine');
+    $this->load->library('jasmine')
+
+After doing this you can run test like this:
+
     describe("CI-Jasmine", function()
     {
 
-      it("can test immediate values", function () {
+      it("can test against literal values", function () {
         $value = 'right';
 		  expect($value)->toEqual('right');
       });
@@ -35,5 +36,7 @@ Jasmine-like interface. With this you can write tests like:
 
     });
 
-When using `expect($actual)->toBe($type)` _$type_ can be any of the 
-CodeIgniter standard `is_*` tests.
+
+`epect($actual)->toEqual($value)` tests the _actual_ against an immediate _value_.
+
+When using `expect($actual)->toBe($type)`, _$type_ can refer to any of the CodeIgniter standard `is_*` tests.
