@@ -55,7 +55,9 @@ class Suite
 				// Try to run the expectation test for the current specification
 				$boundTest = $test->bindTo($ctx);
 				try {
+					$er = error_reporting(0);
 					$boundTest();
+					error_reporting($er);
 					echo $app->unit->run(TRUE,TRUE, $this->topic());
 				} catch (Failure $fail) {
 					// Print failure message and continue to next test
