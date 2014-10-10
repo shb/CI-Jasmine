@@ -34,6 +34,8 @@ class Suite
 
 	public function run()
 	{
+		global $_jasmine_pass;
+
 		$app = get_instance();
 		$app->load->library('unit_test');
 
@@ -55,16 +57,18 @@ class Suite
 				// Try to run the expectation test for the current specification
 				$boundTest = $test->bindTo($ctx);
 				try {
+					$_jasmine_pass = NULL;
 					$er = error_reporting(0);
 					$boundTest();
 					error_reporting($er);
+					if (!isset($_jasmine_pass)) throw new \Exception("No acceptance rules defined in this specification");
 					echo $app->unit->run(TRUE,TRUE, $this->topic());
 				} catch (Failure $fail) {
 					// Print failure message and continue to next test
 					echo $app->unit->run(FALSE,TRUE, $this->topic(), "Test failed: ".$fail->getMessage());
 					continue;
 				}
-				//TODO: posisbily run teardown handler
+				//TODO: possibily run teardown handler
 			}
 			catch (\Exception $ex)
 			{
@@ -78,7 +82,6 @@ class Suite
 
 class Expectation
 {
-	//private $unit;
 	private $suite;
 	private $actual;
 	private $positivity = TRUE;
@@ -86,10 +89,6 @@ class Expectation
 
 	public function __construct ($actual, $suite=NULL, $positivity=TRUE)
 	{
-		/*$CI = get_instance();
-		$CI->load->library('unit_test');
-		$this->unit = $CI->unit;*/
-
 		$this->suite = isset($suite)? $suite : \Jasmine::suite();
 		$this->actual = $actual;
 		$this->positivity = $positivity;
@@ -101,34 +100,42 @@ class Expectation
 			$this->be = 'is indeed';
 		}
 	}
+
+	private function pass()
+	{
+		global $_jasmine_pass;
+		$_jasmine_pass = TRUE;
+	}
 	
 	private function fail ($verb, $expected='')
 	{
+		global $_jasmine_pass;
+		$_jasmine_pass = FALSE;
 		$msg = trim("{$this->actual} {$this->be} {$verb} {$expected}");
 		throw new Failure($msg);
 	}
 
 	public function toEqual ($expected)
 	{
-		if (($this->actual == $expected) === $this->positivity) return TRUE;
+		if (($this->actual == $expected) === $this->positivity) $this->pass();
 		else $this->fail('equal to', $expected);
 	}
 
 	public function toBe($expected)
 	{
-		if (($this->actual === $expected) === $this->positivity) return TRUE;
+		if (($this->actual === $expected) === $this->positivity) $this->pass();
 		else $this->fail('the same as', $expected);
 	}
 	
 	public function toBeDefined()
 	{
-		if (isset($this->actual) === $this->positivity) return TRUE;
+		if (isset($this->actual) === $this->positivity) $this->pass();
 		else $this->fail('defined');
 	}
 	
 	public function toBeUndefined()
 	{
-		if (!isset($this->actual) === $this->positivity) return TRUE;
+		if (!isset($this->actual) === $this->positivity) $this->pass();
 		else $this->fail('undefined');
 	}
 
