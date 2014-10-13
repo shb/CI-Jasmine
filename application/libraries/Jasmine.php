@@ -46,6 +46,8 @@ function describe ($topic, $specs)
 	$suite->run();
 }
 
+function xdescribe ($topic, $specs) {}
+
 function beforeEach($func)
 {
 	\Jasmine::suite()->setup($func);
@@ -55,6 +57,8 @@ function it ($desc, $test)
 {
 	\Jasmine::suite()->spec($desc, $test);
 }
+
+function xit ($desc, $test) {}
 
 function expect ($actual)
 {
