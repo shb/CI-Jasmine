@@ -47,3 +47,24 @@ describe("A spec", function() {
   });
 });
 
+describe("A spec (with setup and tear-down)", function() {
+  $foo;
+
+  beforeEach(function() use(&$foo) {
+    $foo = 0;
+    $foo += 1;
+  });
+
+  afterEach(function() use(&$foo) {
+    $foo = 0;
+  });
+
+  it("is just a function, so it can contain any code", function() use(&$foo) {
+    expect($foo)->toEqual(1);
+  });
+
+  it("can have more than one expectation", function() use(&$foo) {
+    expect($foo)->toEqual(1);
+    expect(true)->toEqual(true);
+  });
+});

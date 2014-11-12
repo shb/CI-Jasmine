@@ -22,6 +22,11 @@ class Suite
 		$this->setup = $func;
 	}
 
+	public function teardown($func)
+	{
+		$this->teardown = $func;
+	}
+
 	public function spec ($desc, $test)
 	{
 		$this->specs[$this->topic.' '.$desc] = $test;
@@ -59,7 +64,12 @@ class Suite
 				try {
 					$_jasmine_pass = NULL;
 					$er = error_reporting(0);
+					$eh = set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+						throw new PHPError($errstr, $errno, $errfile, $errline);
+						return false;
+					}, E_ERROR | E_PARSE | E_CORE_ERROR | E_USER_ERROR);
 					$boundTest();
+					set_error_handler($eh);
 					error_reporting($er);
 					if (!isset($_jasmine_pass)) throw new \Exception("No acceptance rules defined in this specification");
 					echo $app->unit->run(TRUE,TRUE, $this->topic());
@@ -68,7 +78,11 @@ class Suite
 					echo $app->unit->run(FALSE,TRUE, $this->topic(), "Test failed: ".$fail->getMessage());
 					continue;
 				}
-				//TODO: possibily run teardown handler
+				// Possibly run teardown handler
+				if (isset($this->teardown)) {
+					$tear_down = $this->teardown->bindTo($ctx);
+					$tear_down();
+				}
 			}
 			catch (\Exception $ex)
 			{
@@ -143,4 +157,14 @@ class Expectation
 
 class Failure extends \Exception
 {
+}
+
+class PHPError extends \Exception
+{
+	public function __construct ($errstr, $errno, $errfile, $errline)
+	{
+		parent::__construct("PHP Error: \"$errstr\" in '$errfile', line $errline.", $errno);
+		$this->file = $errfile;
+		$this->line = $errline;
+	}
 }

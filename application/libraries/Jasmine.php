@@ -53,6 +53,11 @@ function beforeEach($func)
 	\Jasmine::suite()->setup($func);
 }
 
+function afterEach($func)
+{
+	\Jasmine::suite()->teardown($func);
+}
+
 function it ($desc, $test)
 {
 	\Jasmine::suite()->spec($desc, $test);
