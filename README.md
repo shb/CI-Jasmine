@@ -1,23 +1,23 @@
 CodeIgniter Jasmine
 ===================
 
-**Simple Jasmine-like CodeIgniter unit testing wrapper library**
+**Jasmine-compatible unit testing wrapper library for CodeIgniter 2.x**
 
 
 Installation
 ------------
 
-Copy the `application/libraries/Jasmine.php` file inside your CodeIgniter
+Copy the files `Jasmine.php` and `CI_Jasmin.php` from `application/libraries/` into your CodeIgniter
 application's libraries directory.
 
 Usage
 -----
 
-Load the library with (usually you'll want to do this inside a controller):
+Load the library with:
 
     $this->load->library('jasmine')
 
-After doing this you can run test like this:
+ (usually you want to do this inside a controller). Then you can run tests like this:
 
     describe("CI-Jasmine", function()
     {
@@ -38,15 +38,15 @@ Roadmap
 ### v 1.0.0
 
 - Make PHP-Jasmine framework independent
-- Include framework wrappers as library addons in a single repository or
+- Include framework wrappers as library addons in a single repository _or_
 - Make different repositories with wrappers for different frameworks?
 
 
 Wrappers
 --------
 
-Making the library ouput function customizable one can write wrappers to
-seamlessy run PHPJasmine fomr web application frameworks.
+By making the library ouput function customizable one can write wrappers to
+seamlessly run PHPJasmine inside any web application framework.
 
 Wrapper should bew written for the most popular application 
 frameworks that only have basic testing support.
